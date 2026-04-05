@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FreshMart Grocery Store - Fresh groceries delivered to your door</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header__content">
+                <div class="header__logo">
+                    <h1>🛒 FreshMart</h1>
+                    <p>Fresh groceries delivered to your door</p>
+                </div>
+                
+                <div class="header__search">
+                    <input type="text" id="searchInput" placeholder="Search for products..." class="form-control">
+                    <button class="btn btn--primary" id="searchBtn">Search</button>
+                </div>
+                
+                <div class="header__actions">
+                    <button class="btn btn--outline" id="loginBtn">Login</button>
+                    <button class="btn btn--outline" id="wishlistBtn">
+                        ❤️ Wishlist (<span id="wishlistCount">0</span>)
+                    </button>
+                    <button class="btn btn--primary" id="cartBtn">
+                        🛒 Cart (<span id="cartCount">0</span>)
+                    </button>
+                </div>
+            </div>
+            
+            <nav class="header__nav">
+                <button class="nav-btn active" data-page="home">Home</button>
+                <button class="nav-btn" data-page="products">All Products</button>
+                <button class="nav-btn" data-page="categories">Categories</button>
+                <button class="nav-btn" data-page="orders" id="ordersNavBtn" style="display: none;">My Orders</button>
+                <button class="nav-btn" data-page="admin" id="adminNavBtn" style="display: none;">Admin</button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <!-- Home Page -->
+        <div id="homePage" class="page active">
+            <div class="hero">
+                <div class="container">
+                    <div class="hero__content">
+                        <h2>Welcome to FreshMart</h2>
+                        <p>Fresh groceries delivered to your door in 30 minutes</p>
+                        <button class="btn btn--primary btn--lg" id="shopNowBtn">Shop Now</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="container">
+                <section class="categories-grid">
+                    <h3>Shop by Category</h3>
+                    <div class="categories" id="categoriesGrid"></div>
+                </section>
+                
+                <section class="featured-products">
+                    <h3>Featured Products</h3>
+                    <div class="products-grid" id="featuredProducts"></div>
+                </section>
+            </div>
+        </div>
+
+        <!-- Products Page -->
+        <div id="productsPage" class="page">
+            <div class="container">
+                <div class="products-header">
+                    <h2>All Products</h2>
+                    <div class="products-controls">
+                        <select id="categoryFilter" class="form-control">
+                            <option value="">All Categories</option>
+                        </select>
+                        <select id="sortBy" class="form-control">
+                            <option value="name">Sort by Name</option>
+                            <option value="price-low">Price: Low to High</option>
+                            <option value="price-high">Price: High to Low</option>
+                            <option value="rating">Highest Rated</option>
+                        </select>
+                        <label>
+                            <input type="checkbox" id="organicFilter"> Organic Only
+                        </label>
+                    </div>
+                </div>
+                <div class="products-grid" id="productsGrid"></div>
+            </div>
+        </div>
+
+        <!-- Categories Page -->
+        <div id="categoriesPage" class="page">
+            <div class="container">
+                <h2>Shop by Category</h2>
+                <div class="categories large" id="categoriesPage-grid"></div>
+            </div>
+        </div>
+
+        <!-- Orders Page -->
+        <div id="ordersPage" class="page">
+            <div class="container">
+                <h2>My Orders</h2>
+                <div id="ordersContainer"></div>
+            </div>
+        </div>
+
+        <!-- Admin Page -->
+        <div id="adminPage" class="page">
+            <div class="container">
+                <div class="admin-tabs">
+                    <button class="admin-tab active" data-tab="dashboard">Dashboard</button>
+                    <button class="admin-tab" data-tab="products">Products</button>
+                    <button class="admin-tab" data-tab="orders">Orders</button>
+                </div>
+                
+                <div id="adminDashboard" class="admin-content active">
+                    <h2>Dashboard</h2>
+                    <div class="admin-stats">
+                        <div class="stat-card">
+                            <h3 id="totalProducts">0</h3>
+                            <p>Total Products</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3 id="totalOrders">0</h3>
+                            <p>Total Orders</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3 id="totalRevenue">$0</h3>
+                            <p>Total Revenue</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="adminProducts" class="admin-content">
+                    <div class="admin-header">
+                        <h2>Product Management</h2>
+                        <button class="btn btn--primary" id="addProductBtn">Add Product</button>
+                    </div>
+                    <div class="admin-products-list" id="adminProductsList"></div>
+                </div>
+                
+                <div id="adminOrders" class="admin-content">
+                    <h2>Order Management</h2>
+                    <div id="adminOrdersList"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Cart Sidebar -->
+    <div class="cart-sidebar" id="cartSidebar">
+        <div class="cart-sidebar__header">
+            <h3>Shopping Cart</h3>
+            <button class="close-btn" id="closeCartBtn">×</button>
+        </div>
+        <div class="cart-sidebar__content" id="cartContent">
+            <div class="cart-empty">
+                <p>Your cart is empty</p>
+                <button class="btn btn--primary" id="continueShopping">Continue Shopping</button>
+            </div>
+        </div>
+        <div class="cart-sidebar__footer" id="cartFooter" style="display: none;">
+            <div class="cart-total">
+                <p>Subtotal: <span id="cartSubtotal">$0.00</span></p>
+                <p>Tax: <span id="cartTax">$0.00</span></p>
+                <p>Delivery: <span id="cartDelivery">$4.99</span></p>
+                <h4>Total: <span id="cartTotal">$0.00</span></h4>
+            </div>
+            <button class="btn btn--primary btn--full-width" id="checkoutBtn">Proceed to Checkout</button>
+        </div>
+    </div>
+
+    <!-- Wishlist Modal -->
+    <div class="modal hidden" id="wishlistModal">
+        <div class="modal__content">
+            <div class="modal__header">
+                <h3>My Wishlist</h3>
+                <button class="close-btn" id="closeWishlistBtn">×</button>
+            </div>
+            <div class="modal__body" id="wishlistContent">
+                <div class="wishlist-empty">
+                    <p>Your wishlist is empty</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login/Register Modal -->
+    <div class="modal hidden" id="authModal">
+        <div class="modal__content">
+            <div class="modal__header">
+                <h3 id="authModalTitle">Login</h3>
+                <button class="close-btn" id="closeAuthBtn">×</button>
+            </div>
+            <div class="modal__body">
+                <form id="authForm">
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" id="authEmail" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <input type="password" id="authPassword" class="form-control" required>
+                    </div>
+                    <div class="form-group" id="registerFields" style="display: none;">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" id="authName" class="form-control">
+                        <label class="form-label">Phone</label>
+                        <input type="tel" id="authPhone" class="form-control">
+                        <label class="form-label">Address</label>
+                        <textarea id="authAddress" class="form-control"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn--primary btn--full-width" id="authSubmitBtn">Login</button>
+                </form>
+                <p class="auth-switch">
+                    <span id="authSwitchText">Don't have an account?</span>
+                    <button type="button" id="authSwitchBtn">Register</button>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Checkout Modal -->
+    <div class="modal hidden" id="checkoutModal">
+        <div class="modal__content large">
+            <div class="modal__header">
+                <h3>Checkout</h3>
+                <button class="close-btn" id="closeCheckoutBtn">×</button>
+            </div>
+            <div class="modal__body">
+                <div class="checkout-steps">
+                    <div class="step active" data-step="1">Delivery Info</div>
+                    <div class="step" data-step="2">Payment</div>
+                    <div class="step" data-step="3">Review</div>
+                </div>
+                
+                <div class="checkout-content">
+                    <div id="checkoutStep1" class="checkout-step active">
+                        <form id="deliveryForm">
+                            <div class="form-group">
+                                <label class="form-label">Full Name</label>
+                                <input type="text" id="deliveryName" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Phone</label>
+                                <input type="tel" id="deliveryPhone" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Delivery Address</label>
+                                <textarea id="deliveryAddress" class="form-control" required></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Delivery Time</label>
+                                <select id="deliveryTime" class="form-control" required>
+                                    <option value="">Select delivery time</option>
+                                    <option value="asap">ASAP (30-45 mins)</option>
+                                    <option value="1hour">1 hour</option>
+                                    <option value="2hours">2 hours</option>
+                                    <option value="evening">This evening</option>
+                                </select>
+                            </div>
+                            <button type="button" class="btn btn--primary" id="nextToPayment">Next: Payment</button>
+                        </form>
+                    </div>
+                    
+                    <div id="checkoutStep2" class="checkout-step">
+                        <form id="paymentForm">
+                            <div class="form-group">
+                                <label class="form-label">Payment Method</label>
+                                <select id="paymentMethod" class="form-control" required>
+                                    <option value="">Select payment method</option>
+                                    <option value="credit">Credit Card</option>
+                                    <option value="debit">Debit Card</option>
+                                    <option value="digital">Digital Wallet</option>
+                                    <option value="cash">Cash on Delivery</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Coupon Code (Optional)</label>
+                                <div class="coupon-input">
+                                    <input type="text" id="couponCode" class="form-control" placeholder="Enter coupon code">
+                                    <button type="button" class="btn btn--outline" id="applyCouponBtn">Apply</button>
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button type="button" class="btn btn--outline" id="backToDelivery">Back</button>
+                                <button type="button" class="btn btn--primary" id="nextToReview">Next: Review</button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <div id="checkoutStep3" class="checkout-step">
+                        <div id="orderReview"></div>
+                        <div class="form-actions">
+                            <button type="button" class="btn btn--outline" id="backToPayment">Back</button>
+                            <button type="button" class="btn btn--primary" id="placeOrderBtn">Place Order</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Detail Modal -->
+    <div class="modal hidden" id="productModal">
+        <div class="modal__content large">
+            <div class="modal__header">
+                <h3 id="productModalTitle">Product Details</h3>
+                <button class="close-btn" id="closeProductBtn">×</button>
+            </div>
+            <div class="modal__body" id="productModalBody">
+                <!-- Product details will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Product Modal (Admin) -->
+    <div class="modal hidden" id="addProductModal">
+        <div class="modal__content">
+            <div class="modal__header">
+                <h3>Add New Product</h3>
+                <button class="close-btn" id="closeAddProductBtn">×</button>
+            </div>
+            <div class="modal__body">
+                <form id="addProductForm">
+                    <div class="form-group">
+                        <label class="form-label">Product Name</label>
+                        <input type="text" id="productName" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Category</label>
+                        <select id="productCategory" class="form-control" required></select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Price</label>
+                        <input type="number" id="productPrice" class="form-control" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Description</label>
+                        <textarea id="productDescription" class="form-control" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Stock Quantity</label>
+                        <input type="number" id="productStock" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Brand</label>
+                        <input type="text" id="productBrand" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Unit</label>
+                        <input type="text" id="productUnit" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="productOrganic"> Organic Product
+                        </label>
+                    </div>
+                    <button type="submit" class="btn btn--primary btn--full-width">Add Product</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <div class="toast__content">
+            <span id="toastMessage"></span>
+            <button class="toast__close" id="toastClose">×</button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer__content">
+                <div class="footer__section">
+                    <h4>FreshMart</h4>
+                    <p>Fresh groceries delivered to your door</p>
+                    <p>📞 +1-800-FRESH-MART</p>
+                    <p>📧 support@freshmart.com</p>
+                </div>
+                <div class="footer__section">
+                    <h4>Store Hours</h4>
+                    <p>Monday - Thursday: 8:00 AM - 10:00 PM</p>
+                    <p>Friday - Saturday: 8:00 AM - 11:00 PM</p>
+                    <p>Sunday: 9:00 AM - 9:00 PM</p>
+                </div>
+                <div class="footer__section">
+                    <h4>Quick Links</h4>
+                    <p><a href="#" onclick="showPage('home')">Home</a></p>
+                    <p><a href="#" onclick="showPage('products')">Products</a></p>
+                    <p><a href="#" onclick="showPage('categories')">Categories</a></p>
+                </div>
+            </div>
+            <div class="footer__bottom">
+                <p>&copy; 2025 FreshMart Grocery Store. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
