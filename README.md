@@ -1,2 +1,3 @@
 # Online-Grocery-Store!
-(https://github.com/user-attachments/assets/ebbb1d88-c27c-4398-b611-f36690ff0e5d)
+
+<img width="1359" height="633" alt="image" src="https://github.com/user-attachments/assets/06bf7c40-9fe5-4304-9da7-414298049328" />
